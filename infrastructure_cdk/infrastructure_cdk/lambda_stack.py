@@ -23,4 +23,4 @@ class LambdaStack(Stack):
             handler=hello_function
         )
 
-
+        

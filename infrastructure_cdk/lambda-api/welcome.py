@@ -1,11 +1,14 @@
+import os
 import json
-
+        
 def handler(event, context):
-    print(f'request: {json.dumps(event)}')
+    json_region = os.environ['AWS_REGION']
     return {
-        'statusCode': 200,
-        'header': {
-            'Context-Type': 'text/plain'
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json"
         },
-        'body': f'Hello {event['queryStringParameter']['name']}. You got here!'
+        "body": json.dumps({
+            "Region ": json_region
+        })
     }
