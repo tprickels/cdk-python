@@ -1,0 +1,643 @@
+Resources:
+  ContainerCluster50C4EC52:
+    Type: AWS::ECS::Cluster
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Resource
+  ContainerClusterVpc8D7431D3:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/Resource
+  ContainerClusterVpcPublicSubnet1SubnetE0DDC1AC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.0.0/18
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1/Subnet
+  ContainerClusterVpcPublicSubnet1RouteTableDD1EAADC:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1/RouteTable
+  ContainerClusterVpcPublicSubnet1RouteTableAssociationABD8FA1B:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ContainerClusterVpcPublicSubnet1RouteTableDD1EAADC
+      SubnetId:
+        Ref: ContainerClusterVpcPublicSubnet1SubnetE0DDC1AC
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1/RouteTableAssociation
+  ContainerClusterVpcPublicSubnet1DefaultRoute4AA79F1E:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: ContainerClusterVpcIGW5B973848
+      RouteTableId:
+        Ref: ContainerClusterVpcPublicSubnet1RouteTableDD1EAADC
+    DependsOn:
+      - ContainerClusterVpcVPCGWCB131414
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1/DefaultRoute
+  ContainerClusterVpcPublicSubnet1EIP218ECAE0:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1/EIP
+  ContainerClusterVpcPublicSubnet1NATGatewayAECFE979:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - ContainerClusterVpcPublicSubnet1EIP218ECAE0
+          - AllocationId
+      SubnetId:
+        Ref: ContainerClusterVpcPublicSubnet1SubnetE0DDC1AC
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1
+    DependsOn:
+      - ContainerClusterVpcPublicSubnet1DefaultRoute4AA79F1E
+      - ContainerClusterVpcPublicSubnet1RouteTableAssociationABD8FA1B
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet1/NATGateway
+  ContainerClusterVpcPublicSubnet2SubnetA2DC981A:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.64.0/18
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2/Subnet
+  ContainerClusterVpcPublicSubnet2RouteTableCD70EE3F:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2/RouteTable
+  ContainerClusterVpcPublicSubnet2RouteTableAssociation4EFCBDEF:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ContainerClusterVpcPublicSubnet2RouteTableCD70EE3F
+      SubnetId:
+        Ref: ContainerClusterVpcPublicSubnet2SubnetA2DC981A
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2/RouteTableAssociation
+  ContainerClusterVpcPublicSubnet2DefaultRoute84EC64A1:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: ContainerClusterVpcIGW5B973848
+      RouteTableId:
+        Ref: ContainerClusterVpcPublicSubnet2RouteTableCD70EE3F
+    DependsOn:
+      - ContainerClusterVpcVPCGWCB131414
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2/DefaultRoute
+  ContainerClusterVpcPublicSubnet2EIP113F8A6F:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2/EIP
+  ContainerClusterVpcPublicSubnet2NATGateway20189FBE:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - ContainerClusterVpcPublicSubnet2EIP113F8A6F
+          - AllocationId
+      SubnetId:
+        Ref: ContainerClusterVpcPublicSubnet2SubnetA2DC981A
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2
+    DependsOn:
+      - ContainerClusterVpcPublicSubnet2DefaultRoute84EC64A1
+      - ContainerClusterVpcPublicSubnet2RouteTableAssociation4EFCBDEF
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PublicSubnet2/NATGateway
+  ContainerClusterVpcPrivateSubnet1Subnet9624376D:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 0
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.128.0/18
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet1
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet1/Subnet
+  ContainerClusterVpcPrivateSubnet1RouteTable9AFE8B56:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet1
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet1/RouteTable
+  ContainerClusterVpcPrivateSubnet1RouteTableAssociation7161A6A9:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ContainerClusterVpcPrivateSubnet1RouteTable9AFE8B56
+      SubnetId:
+        Ref: ContainerClusterVpcPrivateSubnet1Subnet9624376D
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet1/RouteTableAssociation
+  ContainerClusterVpcPrivateSubnet1DefaultRoute4665B1BE:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: ContainerClusterVpcPublicSubnet1NATGatewayAECFE979
+      RouteTableId:
+        Ref: ContainerClusterVpcPrivateSubnet1RouteTable9AFE8B56
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet1/DefaultRoute
+  ContainerClusterVpcPrivateSubnet2Subnet781E285A:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone:
+        Fn::Select:
+          - 1
+          - Fn::GetAZs: ""
+      CidrBlock: 10.0.192.0/18
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet2
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet2/Subnet
+  ContainerClusterVpcPrivateSubnet2RouteTable5369B129:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet2
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet2/RouteTable
+  ContainerClusterVpcPrivateSubnet2RouteTableAssociationA332CC78:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ContainerClusterVpcPrivateSubnet2RouteTable5369B129
+      SubnetId:
+        Ref: ContainerClusterVpcPrivateSubnet2Subnet781E285A
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet2/RouteTableAssociation
+  ContainerClusterVpcPrivateSubnet2DefaultRoute921A083A:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: ContainerClusterVpcPublicSubnet2NATGateway20189FBE
+      RouteTableId:
+        Ref: ContainerClusterVpcPrivateSubnet2RouteTable5369B129
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/PrivateSubnet2/DefaultRoute
+  ContainerClusterVpcIGW5B973848:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ECS-Stack/Container-Cluster/Vpc
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/IGW
+  ContainerClusterVpcVPCGWCB131414:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: ContainerClusterVpcIGW5B973848
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/VPCGW
+  ContainerClusterVpcRestrictDefaultSecurityGroupCustomResource7AC7348B:
+    Type: Custom::VpcRestrictDefaultSG
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E
+          - Arn
+      DefaultSecurityGroupId:
+        Fn::GetAtt:
+          - ContainerClusterVpc8D7431D3
+          - DefaultSecurityGroup
+      Account:
+        Ref: AWS::AccountId
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-Cluster/Vpc/RestrictDefaultSecurityGroupCustomResource/Default
+  CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+      ManagedPolicyArns:
+        - Fn::Sub: arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: Inline
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ec2:AuthorizeSecurityGroupIngress
+                  - ec2:AuthorizeSecurityGroupEgress
+                  - ec2:RevokeSecurityGroupIngress
+                  - ec2:RevokeSecurityGroupEgress
+                Resource:
+                  - Fn::Join:
+                      - ""
+                      - - "arn:aws:ec2:us-west-2:"
+                        - Ref: AWS::AccountId
+                        - :security-group/
+                        - Fn::GetAtt:
+                            - ContainerClusterVpc8D7431D3
+                            - DefaultSecurityGroup
+    Metadata:
+      aws:cdk:path: ECS-Stack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role
+  CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-us-west-2
+        S3Key: ee7de53d64cc9d6248fa6aa550f92358f6c907b5efd6f3298aeab1b5e7ea358a.zip
+      Timeout: 900
+      MemorySize: 128
+      Handler: __entrypoint__.handler
+      Role:
+        Fn::GetAtt:
+          - CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0
+          - Arn
+      Runtime: nodejs20.x
+      Description: Lambda function for removing all inbound/outbound rules from the VPC default security group
+    DependsOn:
+      - CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0
+    Metadata:
+      aws:cdk:path: ECS-Stack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler
+      aws:asset:path: asset.ee7de53d64cc9d6248fa6aa550f92358f6c907b5efd6f3298aeab1b5e7ea358a
+      aws:asset:property: Code
+  ContainerAppFargateLB21DD0CBA:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      LoadBalancerAttributes:
+        - Key: deletion_protection.enabled
+          Value: "false"
+      Scheme: internet-facing
+      SecurityGroups:
+        - Fn::GetAtt:
+            - ContainerAppFargateLBSecurityGroupC273035E
+            - GroupId
+      Subnets:
+        - Ref: ContainerClusterVpcPublicSubnet1SubnetE0DDC1AC
+        - Ref: ContainerClusterVpcPublicSubnet2SubnetA2DC981A
+      Type: application
+    DependsOn:
+      - ContainerClusterVpcPublicSubnet1DefaultRoute4AA79F1E
+      - ContainerClusterVpcPublicSubnet1RouteTableAssociationABD8FA1B
+      - ContainerClusterVpcPublicSubnet2DefaultRoute84EC64A1
+      - ContainerClusterVpcPublicSubnet2RouteTableAssociation4EFCBDEF
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/LB/Resource
+  ContainerAppFargateLBSecurityGroupC273035E:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Automatically created Security Group for ELB ECSStackContainerAppFargateLB28959694
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow from anyone on port 80
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/LB/SecurityGroup/Resource
+  ContainerAppFargateLBSecurityGrouptoECSStackContainerAppFargateServiceSecurityGroup17F6E805805B80985A:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      Description: Load balancer to target
+      DestinationSecurityGroupId:
+        Fn::GetAtt:
+          - ContainerAppFargateServiceSecurityGroupC1727A7E
+          - GroupId
+      FromPort: 80
+      GroupId:
+        Fn::GetAtt:
+          - ContainerAppFargateLBSecurityGroupC273035E
+          - GroupId
+      IpProtocol: tcp
+      ToPort: 80
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/LB/SecurityGroup/to ECSStackContainerAppFargateServiceSecurityGroup17F6E805:80
+  ContainerAppFargateLBPublicListener5E45C171:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn:
+            Ref: ContainerAppFargateLBPublicListenerECSGroup1629C6A7
+          Type: forward
+      LoadBalancerArn:
+        Ref: ContainerAppFargateLB21DD0CBA
+      Port: 80
+      Protocol: HTTP
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/LB/PublicListener/Resource
+  ContainerAppFargateLBPublicListenerECSGroup1629C6A7:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: "false"
+      TargetType: ip
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/LB/PublicListener/ECSGroup/Resource
+  ContainerAppFargateTaskDefTaskRole6A86C811:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/TaskDef/TaskRole/Resource
+  ContainerAppFargateTaskDef1CF31FDC:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Essential: true
+          Image:
+            Fn::Sub: ${AWS::AccountId}.dkr.ecr.us-west-2.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-${AWS::AccountId}-us-west-2:9c946838cf91624f799d215bf04b9c8d0bf5dbfe8d842bc8fd0658eb50a41850
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group:
+                Ref: ContainerAppFargateTaskDefContainerAppPageLogGroupD30EEECA
+              awslogs-stream-prefix: Container-App-Fargate
+              awslogs-region: us-west-2
+          Name: Container-App-Page
+          PortMappings:
+            - ContainerPort: 80
+              Protocol: tcp
+      Cpu: "256"
+      ExecutionRoleArn:
+        Fn::GetAtt:
+          - ContainerAppFargateTaskDefExecutionRole296C7C76
+          - Arn
+      Family: ECSStackContainerAppFargateTaskDefF790629A
+      Memory: "512"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      TaskRoleArn:
+        Fn::GetAtt:
+          - ContainerAppFargateTaskDefTaskRole6A86C811
+          - Arn
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/TaskDef/Resource
+  ContainerAppFargateTaskDefContainerAppPageLogGroupD30EEECA:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/TaskDef/Container-App-Page/LogGroup/Resource
+  ContainerAppFargateTaskDefExecutionRole296C7C76:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/TaskDef/ExecutionRole/Resource
+  ContainerAppFargateTaskDefExecutionRoleDefaultPolicy86A2DE25:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:BatchGetImage
+              - ecr:GetDownloadUrlForLayer
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:ecr:us-west-2:"
+                  - Ref: AWS::AccountId
+                  - :repository/
+                  - Fn::Sub: cdk-hnb659fds-container-assets-${AWS::AccountId}-us-west-2
+          - Action: ecr:GetAuthorizationToken
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - ContainerAppFargateTaskDefContainerAppPageLogGroupD30EEECA
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: ContainerAppFargateTaskDefExecutionRoleDefaultPolicy86A2DE25
+      Roles:
+        - Ref: ContainerAppFargateTaskDefExecutionRole296C7C76
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/TaskDef/ExecutionRole/DefaultPolicy/Resource
+  ContainerAppFargateServiceF1080834:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster:
+        Ref: ContainerCluster50C4EC52
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 50
+      DesiredCount: 1
+      EnableECSManagedTags: false
+      HealthCheckGracePeriodSeconds: 60
+      LaunchType: FARGATE
+      LoadBalancers:
+        - ContainerName: Container-App-Page
+          ContainerPort: 80
+          TargetGroupArn:
+            Ref: ContainerAppFargateLBPublicListenerECSGroup1629C6A7
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          SecurityGroups:
+            - Fn::GetAtt:
+                - ContainerAppFargateServiceSecurityGroupC1727A7E
+                - GroupId
+          Subnets:
+            - Ref: ContainerClusterVpcPrivateSubnet1Subnet9624376D
+            - Ref: ContainerClusterVpcPrivateSubnet2Subnet781E285A
+      TaskDefinition:
+        Ref: ContainerAppFargateTaskDef1CF31FDC
+    DependsOn:
+      - ContainerAppFargateLBPublicListenerECSGroup1629C6A7
+      - ContainerAppFargateLBPublicListener5E45C171
+      - ContainerAppFargateTaskDefTaskRole6A86C811
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/Service/Service
+  ContainerAppFargateServiceSecurityGroupC1727A7E:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ECS-Stack/Container-App-Fargate/Service/SecurityGroup
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: ContainerClusterVpc8D7431D3
+    DependsOn:
+      - ContainerAppFargateTaskDefTaskRole6A86C811
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/Service/SecurityGroup/Resource
+  ContainerAppFargateServiceSecurityGroupfromECSStackContainerAppFargateLBSecurityGroup3BE8055E8066020A0D:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Load balancer to target
+      FromPort: 80
+      GroupId:
+        Fn::GetAtt:
+          - ContainerAppFargateServiceSecurityGroupC1727A7E
+          - GroupId
+      IpProtocol: tcp
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - ContainerAppFargateLBSecurityGroupC273035E
+          - GroupId
+      ToPort: 80
+    DependsOn:
+      - ContainerAppFargateTaskDefTaskRole6A86C811
+    Metadata:
+      aws:cdk:path: ECS-Stack/Container-App-Fargate/Service/SecurityGroup/from ECSStackContainerAppFargateLBSecurityGroup3BE8055E:80
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/31Sy27jMAz8lt4VLZoW2HOadosARWvYRa8BLTMuN7JkiFSCwPC/LyTntd3HicPhUCJHmuvb++/67gb2PDPNdmap1kMlYLYK9rwe0LAeljayYFDLjTvBHxBaEHwH3j7ihhwJeZcEXxnvBMhhuOKOvRWGHRlMTUc4KjRzPXz0JpEfxVIVsbZkqlg7lCw8o9LHdH1t8cJfuAWzNwSnoXIhgadVkcIryDMI7uGgikC7NMz54JUTDA7PgmmSY7YQAfPZoRNVoYmB5PAcfOynJf5HPLUBmf+gVy7zafOwBmYU1o/ebDGsOmjTHiippkvsPZP4cHgARoWG1z1IGpX1ou8tmbzti4fmASw4g80Xn9ECCxnroamzgly7m+vh7935tX/Lr3XEgu6oOeGr+juEFuVsxFU6KoJOD6Wf3i3Hwlsy2egJjcr6lvXw4tvzESc8jqpE9jGkjxNZfHdJN+4fpSL4HTUYsnPZ0kqgJdemnrcofZRRFQf59O7bnb6d6/ubn0w0C9EJdajLKf4CyVYccCwDAAA=
+    Metadata:
+      aws:cdk:path: ECS-Stack/CDKMetadata/Default
+Outputs:
+  ContainerAppFargateLoadBalancerDNS8BF34060:
+    Value:
+      Fn::GetAtt:
+        - ContainerAppFargateLB21DD0CBA
+        - DNSName
+  ContainerAppFargateServiceURLBC9757B2:
+    Value:
+      Fn::Join:
+        - ""
+        - - http://
+          - Fn::GetAtt:
+              - ContainerAppFargateLB21DD0CBA
+              - DNSName
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
+
